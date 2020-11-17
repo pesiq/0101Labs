@@ -1,17 +1,17 @@
-//Дана строка, содержащая слова, раздеоенные одним или несколькими разделительными символами, в начале и в конце строки
-// так же могут находиться разделительные символы. Сформировать новую строк каждое четное слово по алфавиту 
-//
-//
+//Дана строка, содержащая слова, разделенные одним или несколькими разделительными символами (пробелами, табуляторами),
+//в начале строки и в конце строки также могут находиться разделительные символы.
+//Сформировать новую строку,
+//в которой четные слова исходной строки записаны в алфавитном порядке и разделяются одним пробелом.
+//В начале строки и в конце строки не должно быть разделительных символов.
 
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
 #include <stdlib.h>
+#include "string.h"
 
 #define MLEN 500
 
 char *strwrk(char in[]) {
-    printf("%s\n", in);
     int i, k, l, j, twl;
     char *w[MLEN];
     int wl[MLEN];
@@ -92,14 +92,12 @@ int main() {
     char *out;
 
     words = getstring();
-    double input_offset = clock();
 
     out = strwrk(words);
     double total_time = clock();
 
     printf("\"%s\" \n", out);
-    printf("Total time: %.25f seconds, actual time: %.81f\n", total_time / CLOCKS_PER_SEC,
-           (total_time - input_offset) / CLOCKS_PER_SEC);
+    printf("Total time: %.81f\n", total_time / CLOCKS_PER_SEC);
 
     return 0;
 
