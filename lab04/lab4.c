@@ -12,7 +12,7 @@ char *letter_freq(char input[]);
 void keyboard_input();
 char **tokenize(char *in, int amount);
 char *detokenize(char **in, int size, int n);
-//int file_input();
+void file_input();
 //int generate_random();
 
 void strwrk(char *input){
@@ -33,9 +33,10 @@ void strwrk(char *input){
     //Токенизация строки для сортировки пузырьком
     char **bubble_words = tokenize(bubble_str, word_amount);
 
-    double time_before_sort = clock(); //Начало таймера сортировки
+    clock_t sort_time = clock(); //Начало таймера сортировки
     bubble_sort(bubble_words, word_amount);
-    double bubble_time = ((clock() - time_before_sort) / CLOCKS_PER_SEC);//Конец таймера сортировки
+    sort_time = clock() - sort_time;
+    double bubble_time = (double) (sort_time / CLOCKS_PER_SEC);//Конец таймера сортировки
 
     //Собирается строка из отсортированных пузырьком слов
     char *bubble_out = detokenize(bubble_words, input_len, word_amount);
@@ -44,9 +45,9 @@ void strwrk(char *input){
     //Токенизация строки для сортировки вставками
     char **insertion_words = tokenize(insertion_str, word_amount);
 
-    time_before_sort = clock();     //Начало таймера сортировки
+    sort_time = clock();     //Начало таймера сортировки
     insertion_sort(insertion_words, word_amount);
-    double insertion_time = ((clock() - time_before_sort) / CLOCKS_PER_SEC); //Конец таймера сортировки
+    double insertion_time = ((clock() - sort_time)/CLOCKS_PER_SEC); //Конец таймера сортировки
 
     //Собирается результат сортировки вставками
     char *insertion_out = detokenize(insertion_words, input_len, word_amount);
@@ -66,7 +67,12 @@ void strwrk(char *input){
         prompt = getstring();
         if (!strcmp(prompt, "yes")) {
             //write to file
-            printf("Eat da poopoo ZULUL\n");
+            FILE *file;
+            file = fopen("./output.txt", "w");
+            fprintf(file,"Input string was:\n\"%s\"\nResult of bubble sort is:\n\"%s\"\nWith time of: %.50f\nResult of insertion sort is:\n\"%s\"\nWith time of: %.50f\n", input, bubble_out, bubble_time, insertion_out, insertion_time);
+            fprintf(file,"Frequency of each character used\n%s", freq);
+            fclose(file);
+            printf("Saved to file\n");
             prompt = "no";
         }else {
             printf("Please enter yes or no\n");
@@ -123,7 +129,7 @@ char *letter_freq(char *input){
             sprintf(temp, "'%c' = %d\n", input[i], counter);
             int part_len = strlen(temp);
             out = realloc(out, part_len+out_len+1);
-            strcpy(out+out_len, temp);
+            memcpy(out+out_len, temp, part_len);
             out_len = out_len + part_len;
         }
     }
@@ -203,6 +209,20 @@ void keyboard_input(){
     free(input);
 }
 
+void file_input(){
+    char input[10000];
+    char name[100];
+    FILE *file;
+    scanf("%s", name);
+    while(!(file = fopen(name, "r"))){
+        printf("Cannot open file!\n");
+        scanf("%s", name);
+    }
+    fgets(input, 10000, file);
+    strwrk(input);
+    free(input);
+}
+
 int main(){
 	printf("Starting...\n");
     int status = 1, menu;
@@ -220,7 +240,8 @@ int main(){
                 break;
             case 2:
                 printf("-----Option two - file input-----\nEnter input file name\n");
-                //file_input();
+                fflush(stdin);
+                file_input();
                 break;
             case 3:
                 printf("-----Option three - random input-----\nEnter seed to generate a random string\n");
