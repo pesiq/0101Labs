@@ -116,7 +116,7 @@ char *letter_freq(char *input){
     char *out = NULL, *workingstr = NULL, temp[120];
     int i, j, len = strlen(input), counter = 0, out_len = 0;
     workingstr = calloc(strlen(input), sizeof(char));
-    strcpy(workingstr, input);
+    memcpy(workingstr, input, len);
     for(i =0; i < len; i++){
         counter = 1;
         if(workingstr[i]) {
@@ -133,6 +133,7 @@ char *letter_freq(char *input){
             out_len = out_len + part_len;
         }
     }
+    out[out_len] = '\0';
     free(workingstr);
     return out;
 }
@@ -203,7 +204,7 @@ char *getstring() {
 }
 
 void keyboard_input(){
-    char *input = NULL;
+    char *input;
     input = getstring();
     strwrk(input);
     free(input);
@@ -220,7 +221,6 @@ void file_input(){
     }
     fgets(input, 10000, file);
     strwrk(input);
-    free(input);
 }
 
 int main(){
