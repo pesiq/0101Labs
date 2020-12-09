@@ -16,8 +16,24 @@ void file_input();
 //int generate_random();
 
 void strwrk(char *input){
+	char ** w, * p;
+	int * wl, l, i;
+	w=malloc(strlen(input)/2*sizeof(char *));
+	wl=malloc(strlen(input)/2*sizeof(int));
+	for (i=0, p=input; *(p+=strspn(p, " \t")); p+=wl[i++]){
+		w[i]=p;
+		wl[i]=strcspn(p, " \t");
+	}
+	l=i;
+	w=realloc(w, l*sizeof(char *));
+	wl=realloc(wl, l*sizeof(int));
+	for (i=0; i<l; i++)
+		printf("'%.*s' - %d\n", wl[i], w[i], wl[i]);
+	
 
-    int input_len = strlen(input);
+	free(w);
+	free(wl);
+/*    int input_len = strlen(input);
     //Вычисление количества слов (кол-во пробелов + 1)
     int word_amount = 1, i;
     for(i = 0; input[i]; i++){
@@ -25,10 +41,10 @@ void strwrk(char *input){
     }
 
     //Предобработка строк для сортировки
-    char *bubble_str = calloc(strlen(input), sizeof(char));
-    memcpy(bubble_str, input, input_len);
-    char *insertion_str = calloc(strlen(input), sizeof(char));
-    memcpy(insertion_str, input, input_len);
+    char *bubble_str = calloc(strlen(input)+1, sizeof(char));
+    memcpy(bubble_str, input, input_len+1);
+    char *insertion_str = calloc(strlen(input)+1, sizeof(char));
+    memcpy(insertion_str, input, input_len+1);
 
     //Токенизация строки для сортировки пузырьком
     char **bubble_words = tokenize(bubble_str, word_amount);
@@ -79,7 +95,7 @@ void strwrk(char *input){
         }
     }while(strcmp(prompt, "no"));
     printf("*****----------*****\n");
-    free(freq), free(bubble_out), free(insertion_out);
+    free(freq), free(bubble_out), free(insertion_out);*/
 }
 
 
@@ -229,18 +245,17 @@ int main(){
     while (status){
         printf("Please enter a number 1 - 4\n1: Input string from keyboard\n2: Input from file\n3: Generate random string\n4: Quit\n");
         if(scanf("%d", &menu) != 1) {
+			scanf("%*[^\n]");
             menu = 0;
-            fflush(stdin);
         }
+		scanf("%*c");
         switch (menu) {
             case 1:
                 printf("-----Option one - keyboard input-----\nEnter a string to work with\n");
-                fflush(stdin);
                 keyboard_input();
                 break;
             case 2:
                 printf("-----Option two - file input-----\nEnter input file name\n");
-                fflush(stdin);
                 file_input();
                 break;
             case 3:
