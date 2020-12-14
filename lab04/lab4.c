@@ -141,7 +141,8 @@ char *letter_freq(char *input) {
 
 char *generate_random() {
 
-    const char charset[] = "    abcdef ghijklmnopqrstuv wxyz ";
+    srand(clock());
+    const char charset[] = "    abcdefghijklmnopqrstuvwxyz  ";
     int len = rand() % 50 + 20;
     char *dest = calloc(len + 1, sizeof(char));
 
@@ -236,19 +237,78 @@ void keyboard_input() {
 }
 
 void file_input() {
-    char input[10000], name[100];
-    int type = 1, to_file = 0;
+
+    char string[1000], name[100];
+    int type = 1, to_file = 0, amount, i;
     FILE *file;
     scanf("%s", name);
     while (!(file = fopen(name, "r"))) {
         printf("Cannot open file!\n");
         scanf("%s", name);
     }
-    fgets(input, 10000, file);
-    strwrk(input, type, to_file);
+
+    printf("Choose which sorting algorithm to use. Type 1 or 2\n 1. Bubble sort\n 2. Insertion sort\n");
+    do {
+        if (scanf("%d", &type) != 1) {
+            scanf("%*[^\n]");
+            printf("Illegal input! Please input 1 or 2\n");
+        }
+    } while (type != 1 && type != 2);
+
+    printf("Would you like to save the results to a file? Type 1 or 2\n 1. Yes\n 2. No\n");
+    do {
+        if (scanf("%d", &to_file) != 1) {
+            scanf("%*[^\n]");
+            printf("Illegal input! Please input 1 or 2\n");
+        }
+    } while (to_file != 1 && to_file != 2);
+
+    if(to_file == 1){
+        FILE *file = fopen("./output.txt", "w");
+        fclose(file);
+    }
+    if(to_file == 2) to_file = 0;
+    scanf("%*c");
+
+    if(fscanf(file, "%d", &amount) == 1){
+        fscanf(file,"%*c");
+        for(i = 0; i < amount; i++){
+            fgets(string, 1000, file);
+            strtok(string, "\n");
+            strwrk(string, type, to_file);
+        }
+    } else {
+        printf("File incorrectly formatted!\n");
+    }
 }
 
 void random_input() {
+    int type, to_file, amount, i, seed;
+
+    printf("Enter an amount of strings to generate\n");
+    while (scanf("%d", &amount) != 1) {
+        scanf("%*[^\n]");
+    }
+
+    printf("Choose which sorting algorithm to use. Type 1 or 2\n 1. Bubble sort\n 2. Insertion sort\n");
+    do {
+        if (scanf("%d", &type) != 1) {
+            scanf("%*[^\n]");
+            printf("Illegal input! Please input 1 or 2\n");
+        }
+    } while (type != 1 && type != 2);
+
+    printf("Would you like to save the results to a file? Type 1 or 2\n 1. Yes\n 2. No\n");
+    do {
+        if (scanf("%d", &to_file) != 1) {
+            scanf("%*[^\n]");
+            printf("Illegal input! Please input 1 or 2\n");
+        }
+    } while (to_file != 1 && to_file != 2);
+
+    for(i = 0; i < amount; i++){
+        strwrk(generate_random(), type, to_file);
+    }
 
 }
 
@@ -272,8 +332,8 @@ int main() {
                 file_input();
                 break;
             case 3:
-                printf("-----Option three - random input-----\nEnter seed to generate a random string\n");
-                generate_random();
+                printf("-----Option three - random input-----\n");
+                random_input();
                 break;
             case 4:
                 status = 0;
