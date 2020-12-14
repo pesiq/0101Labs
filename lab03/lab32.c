@@ -93,11 +93,12 @@ int main() {
 
     words = getstring();
 
+    time_t t = clock();
     out = strwrk(words);
-    double total_time = clock();
+    double time  = (t - clock()) / CLOCKS_PER_SEC;
 
     printf("\"%s\" \n", out);
-    printf("Total time: %.81f\n", total_time / CLOCKS_PER_SEC);
+    printf("Total time: %.81f\n", time);
 
     return 0;
 
