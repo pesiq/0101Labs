@@ -4,7 +4,7 @@
 #include <time.h>
 
 
-void strwrk(char *input, int type);
+void strwrk(char *input, int type, int to_file);
 
 char *getstring();
 
@@ -22,7 +22,7 @@ void random_input();
 
 char *generate_random();
 
-void strwrk(char *input, int type) {
+void strwrk(char *input, int type, int to_file) {
     char **words, *p;
     int *wl, l, i, len = strlen(input), ln = 0;
     words = malloc(len / 2 * sizeof(char *));
@@ -50,46 +50,30 @@ void strwrk(char *input, int type) {
             break;
     }
 
-    char *output = calloc(len, sizeof(char));
+    char *output = calloc(len+1, sizeof(char));
     char *freq = letter_freq(input);
     for (i = 0; i < l; i++) {
-        memcpy(output, words[i], wl[i]);
+        memcpy(output + ln, words[i], wl[i]);
         ln += wl[i];
+        output[ln++] = ' ';
     }
     output[ln] = '\0';
     printf("Input string was '%s'\nSorted string is '%s'\nTime was: %.30f\nLetter frequency: %s\n", input, output, time,
            freq);
 
+        if (to_file) {
+            FILE *file = fopen("./output.txt", "a");
+            fprintf(file,"Input string was '%s'\nSorted string is '%s'\nTime was: %.30f\nLetter frequency: %s\n", input, output, time,
+                    freq);
+            fclose(file);
+            printf("Saved to file\n");
+        }
+
     free(words);
     free(wl);
     free(output);
     free(freq);
-/*
-    //Вывод результатов
-    printf("Input string was:\n\"%s\"\nResult of bubble sort is:\n\"%s\"\nWith time of: %.50f\nResult of insertion sort is:\n\"%s\"\nWith time of: %.50f\n", input, bubble_out, bubble_time, insertion_out, insertion_time);
-    printf("Frequency of each character used\n");
-    printf("%s\n", freq);
 
-    printf("Would you like to save the current state to a file? (yes/no) ");
-    char *prompt = NULL;
-    do{
-        fflush(stdin);
-        prompt = getstring();
-        if (!strcmp(prompt, "yes")) {
-            //write to file
-            FILE *file;
-            file = fopen("./output.txt", "w");
-            fprintf(file,"Input string was:\n\"%s\"\nResult of bubble sort is:\n\"%s\"\nWith time of: %.50f\nResult of insertion sort is:\n\"%s\"\nWith time of: %.50f\n", input, bubble_out, bubble_time, insertion_out, insertion_time);
-            fprintf(file,"Frequency of each character used\n%s", freq);
-            fclose(file);
-            printf("Saved to file\n");
-            prompt = "no";
-        }else {
-            printf("Please enter yes or no\n");
-        }
-    }while(strcmp(prompt, "no"));
-    printf("*****----------*****\n");
-    free(freq), free(bubble_out), free(insertion_out);*/
 }
 
 
@@ -143,7 +127,7 @@ char *letter_freq(char *input) {
                     workingstr[j] = '\0';
                 }
             }
-            sprintf(temp, "'%c' = %d", input[i], counter);
+            sprintf(temp, "'%c' - %d ", input[i], counter);
             int part_len = strlen(temp);
             out = realloc(out, part_len + out_len + 1);
             memcpy(out + out_len, temp, part_len);
@@ -204,36 +188,56 @@ char *getstring() {
 
 void keyboard_input() {
 
-    int amount, type, i;
+    int amount, type, to_file, i;
     char **strings;
 
     printf("Enter an amount of strings\n");
     while (scanf("%d", &amount) != 1) {
         scanf("%*[^\n]");
     }
+
     strings = malloc(amount * sizeof(char *));
+
     scanf("%*c");
     printf("Enter %d strings to work with\n", amount);
     for (i = 0; i < amount; i++) {
         strings[i] = getstring();
     }
+
     printf("Choose which sorting algorithm to use. Type 1 or 2\n 1. Bubble sort\n 2. Insertion sort\n");
     do {
         if (scanf("%d", &type) != 1) {
             scanf("%*[^\n]");
+            printf("Illegal input! Please input 1 or 2\n");
         }
     } while (type != 1 && type != 2);
+
+    printf("Would you like to save the results to a file? Type 1 or 2\n 1. Yes\n 2. No\n");
+    do {
+        if (scanf("%d", &to_file) != 1) {
+            scanf("%*[^\n]");
+            printf("Illegal input! Please input 1 or 2\n");
+        }
+    } while (to_file != 1 && to_file != 2);
+
+    if(to_file == 1){
+        FILE *file = fopen("./output.txt", "w");
+        fclose(file);
+    }
+    if(to_file == 2) to_file = 0;
+
     scanf("%*c");
     for (i = 0; i < amount; i++) {
-        strwrk(strings[i], type);
+        strwrk(strings[i], type, to_file);
         free(strings[i]);
     }
+
     free(strings);
 }
 
 void file_input() {
     char input[10000], name[100];
-    int type = 1;
+    int type = 1, to_file = 0;
     FILE *file;
     scanf("%s", name);
     while (!(file = fopen(name, "r"))) {
@@ -241,7 +245,7 @@ void file_input() {
         scanf("%s", name);
     }
     fgets(input, 10000, file);
-    strwrk(input, type);
+    strwrk(input, type, to_file);
 }
 
 void random_input() {
