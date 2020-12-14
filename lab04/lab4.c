@@ -58,12 +58,12 @@ void strwrk(char *input, int type, int to_file) {
         output[ln++] = ' ';
     }
     output[ln] = '\0';
-    printf("Input string was '%s'\nSorted string is '%s'\nTime was: %.30f\nLetter frequency: %s\n", input, output, time,
+    printf("Input string was '%s'\nSorted string is '%s'\nTime was: %.50f\nLetter frequency: %s\n", input, output, time,
            freq);
 
         if (to_file) {
             FILE *file = fopen("./output.txt", "a");
-            fprintf(file,"Input string was '%s'\nSorted string is '%s'\nTime was: %.30f\nLetter frequency: %s\n", input, output, time,
+            fprintf(file,"Input string was '%s'\nSorted string is '%s'\nTime was: %.50f\nLetter frequency: %s\n", input, output, time,
                     freq);
             fclose(file);
             printf("Saved to file\n");
@@ -139,9 +139,9 @@ char *letter_freq(char *input) {
     return out;
 }
 
-char *generate_random() {
+char *generate_random(int seed) {
 
-    srand(clock());
+    srand(seed);
     const char charset[] = "    abcdefghijklmnopqrstuvwxyz  ";
     int len = rand() % 50 + 20;
     char *dest = calloc(len + 1, sizeof(char));
@@ -290,6 +290,14 @@ void random_input() {
         scanf("%*[^\n]");
     }
 
+    printf("Enter a seed to generate a string with\n");
+    do {
+        if (scanf("%d", &seed) != 1) {
+            scanf("%*[^\n]");
+            printf("Illegal input! Please input a number\n");
+        }
+    } while (!seed);
+
     printf("Choose which sorting algorithm to use. Type 1 or 2\n 1. Bubble sort\n 2. Insertion sort\n");
     do {
         if (scanf("%d", &type) != 1) {
@@ -307,7 +315,7 @@ void random_input() {
     } while (to_file != 1 && to_file != 2);
 
     for(i = 0; i < amount; i++){
-        strwrk(generate_random(), type, to_file);
+        strwrk(generate_random(seed + i), type, to_file);
     }
 
 }
