@@ -50,15 +50,17 @@ void strwrk(char *input, int type, int to_file) {
             break;
     }
 
-    char *output = calloc(len+1, sizeof(char));
+    char *output = calloc(len+2, sizeof(char));
     char *freq = letter_freq(input);
+
     for (i = 0; i < l; i++) {
         memcpy(output + ln, words[i], wl[i]);
         ln += wl[i];
         output[ln++] = ' ';
     }
     output[ln] = '\0';
-    printf("Input string was '%s'\nSorted string is '%s'\nTime was: %.50f\nLetter frequency: %s\n", input, output, time,
+    
+	printf("Input string was '%s'\nSorted string is '%s'\nTime was: %.50f\nLetter frequency: %s\n", input, output, time,
            freq);
 
         if (to_file) {
@@ -229,7 +231,8 @@ void keyboard_input() {
 
     scanf("%*c");
     for (i = 0; i < amount; i++) {
-        strwrk(strings[i], type, to_file);
+        if(*strings[i] != '\0') strwrk(strings[i], type, to_file);
+		else printf("String #%d is NULL!\n",i+1);
         free(strings[i]);
     }
 
@@ -280,6 +283,7 @@ void file_input() {
     } else {
         printf("File incorrectly formatted!\n");
     }
+	fclose(file);
 }
 
 void random_input() {
@@ -315,7 +319,9 @@ void random_input() {
     } while (to_file != 1 && to_file != 2);
 
     for(i = 0; i < amount; i++){
-        strwrk(generate_random(seed + i), type, to_file);
+        char *temp = generate_random(seed + i);
+		strwrk(temp, type, to_file);
+		free(temp);
     }
 
 }
