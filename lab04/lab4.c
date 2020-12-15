@@ -268,7 +268,7 @@ void file_input() {
 
     if(to_file == 1){
         FILE *file = fopen("./output.txt", "w");
-        fclose(file);
+	    fclose(file);
     }
     if(to_file == 2) to_file = 0;
     scanf("%*c");
@@ -310,6 +310,14 @@ void random_input() {
         }
     } while (type != 1 && type != 2);
 
+	
+    if(to_file == 1){
+        FILE *file = fopen("./output.txt", "w");
+	    fclose(file);
+    }
+    if(to_file == 2) to_file = 0;
+    scanf("%*c");
+
     printf("Would you like to save the results to a file? Type 1 or 2\n 1. Yes\n 2. No\n");
     do {
         if (scanf("%d", &to_file) != 1) {
@@ -317,6 +325,8 @@ void random_input() {
             printf("Illegal input! Please input 1 or 2\n");
         }
     } while (to_file != 1 && to_file != 2);
+	
+
 
     for(i = 0; i < amount; i++){
         char *temp = generate_random(seed + i);
