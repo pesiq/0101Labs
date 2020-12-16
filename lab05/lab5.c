@@ -18,6 +18,8 @@ int main(){
 
     List *string = new_list();
     int i;
+	
+	printf("Enter a string to work with\n");
 
     do{
         list_append(string, getchar());
