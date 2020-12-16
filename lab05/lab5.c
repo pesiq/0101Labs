@@ -3,19 +3,26 @@
 
 int main(){
 
-    List *string = new_list();
-    int i;
+    char t;
 
-    do{
-        list_append(string, getchar());
-    }while(string->tail->data != '\n' && string->tail->data != EOF);
+	do{
+		
+		List *string = new_list();
 
-    string->tail->data = '\0';
+		printf("Enter a string to work with\n");
+    	do{
+			t = getchar();
+        	list_append(string, t);
+    	}while(t != '\n' && t != EOF);
 
-    remove_repeating(string);
+    	string->tail->data = '\0';
 
-    print_list(string);
-    free_list(string);
+    	remove_repeating(string);
+
+    	print_list(string);
+    	free_list(string);
+	
+	}while(t != EOF);
 
     return 0;
 }
