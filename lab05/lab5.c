@@ -1,19 +1,6 @@
 #include <stdio.h>
 #include "list.h"
 
-void remove_repeating(List *list){
-    Item *ptr = list->head;
-    while(ptr){
-        char val = ptr->data;
-        Item *temp = ptr;
-        while(temp) {
-            list_remove_from(list, ptr,val);
-            temp = temp->next;
-        }
-        ptr = ptr->next;
-    }
-}
-
 int main(){
 
     List *string = new_list();
