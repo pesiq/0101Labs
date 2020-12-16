@@ -16,21 +16,26 @@ void remove_repeating(List *list){
 
 int main(){
 
-    List *string = new_list();
-    int i;
+    char t;
+
+	do{
+		
+		List *string = new_list();
+
+		printf("Enter a string to work with\n");
+    	do{
+			t = getchar();
+        	list_append(string, t);
+    	}while(t != '\n' && t != EOF);
+
+    	string->tail->data = '\0';
+
+    	remove_repeating(string);
+
+    	print_list(string);
+    	free_list(string);
 	
-	printf("Enter a string to work with\n");
-
-    do{
-        list_append(string, getchar());
-    }while(string->tail->data != '\n' && string->tail->data != EOF);
-
-    string->tail->data = '\0';
-
-    remove_repeating(string);
-
-    print_list(string);
-    free_list(string);
+	}while(t != EOF);
 
     return 0;
 }
