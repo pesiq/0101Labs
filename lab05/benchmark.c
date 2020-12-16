@@ -6,8 +6,7 @@
 
 int main(){
 
-    int amount, len, i;
-    clock_t time, total_time;
+    int amount, len, i, work;
     const char charset[] = " abcdefghijklmnopqrstuvwxyz";
 
 
@@ -16,6 +15,7 @@ int main(){
         scanf("%*[^\n]");
         printf("Please enter a number!\n");
     }
+    work = amount;
 
     printf("Please enter the length of strings\n");
     while (scanf("%d", &len) != 1) {
@@ -23,26 +23,28 @@ int main(){
         printf("Please enter a number!\n");
     }
 
-    while(amount--){
+    double total_time = 0;
+    while(work--){
         List *list = new_list();
         for(i = 0; i<len; i++){
-            srand(clock());
-            list_append(list, charset[rand() % strlen(charset)]);
+            list_append(list, charset[(rand() + i) % strlen(charset)]);
         }
+        list_append(list, '\0');
 
-        printf("Working on string '");
+        printf("Working on string:\n");
         print_list(list);
-        time = clock();
+        clock_t t = clock();
         remove_repeating(list);
+        t = clock() - t;
+        double time = (double) t / CLOCKS_PER_SEC;
         total_time += time;
-        printf("'\nResult is '");
+        printf("Result is:\n");
         print_list(list);
-        printf("'\n");
 
         free_list(list);
     }
 
-    printf("Avg time to work on one string is: %.30f", (double)(total_time / CLOCKS_PER_SEC) / amount);
+    printf("Avg time to work on one string is: %.30f", total_time / amount);
 
     return 0;
 }
