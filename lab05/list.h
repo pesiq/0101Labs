@@ -18,3 +18,5 @@ void free_list(List *list);
 void list_append(List *list, char data);
 
 void list_remove_from(List *list, Item *curr, char data);
+
+void remove_repeating(List *list);

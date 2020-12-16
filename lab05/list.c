@@ -52,3 +52,16 @@ void list_remove_from(List *list, Item *prev, char data){
     if(curr) prev->next = curr->next;
     free(curr);
 }
+
+void remove_repeating(List *list){
+    Item *ptr = list->head;
+    while(ptr){
+        char val = ptr->data;
+        Item *temp = ptr;
+        while(temp) {
+            list_remove_from(list, ptr,val);
+            temp = temp->next;
+        }
+        ptr = ptr->next;
+    }
+}
